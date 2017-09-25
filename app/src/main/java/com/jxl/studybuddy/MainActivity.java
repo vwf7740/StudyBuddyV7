@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
     private void checkUserExists() {
         mAuth.getCurrentUser().reload();
         final String user_id = mAuth.getCurrentUser().getUid();
-        mDatabaseUsers.addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabaseUsers.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.hasChild(user_id)){
@@ -121,4 +121,5 @@ public class MainActivity extends AppCompatActivity {
     private void mainSequence() {
 
     }
+
 }

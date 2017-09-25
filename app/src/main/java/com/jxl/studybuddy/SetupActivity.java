@@ -74,7 +74,7 @@ public class SetupActivity extends AppCompatActivity {
         mCourse4Button = (Button) findViewById(R.id.button_courseCode4_setup);
         mSubmitButton = (Button) findViewById(R.id.button_submit_setup);
 
-        mCurrentUser.addListenerForSingleValueEvent(new ValueEventListener() {
+        mCurrentUser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mNameTextView.setText(dataSnapshot.child("name").getValue().toString());
