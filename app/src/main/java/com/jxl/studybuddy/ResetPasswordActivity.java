@@ -34,6 +34,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
         mResetPasswordButton = (Button) findViewById(R.id.button_resetPassword_reset);
         mBackToLoginButton = (Button) findViewById(R.id.button_login_reset);
         mEmailForResetPass = (EditText) findViewById(R.id.editText_email_reset);
+        //If the user hits the Return to login button, transition back to the LoginActivity.
         mBackToLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -41,6 +42,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
                 startActivity(loginIntent);
             }
         });
+        //When user hits Reset password button, resetPassword() is executed.
         mResetPasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -49,6 +51,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
         });
     }
 
+    //Once the user has input their registered email, this method sends an email with a password reset link to the user.
     private void resetPassword() {
         String email = mEmailForResetPass.getText().toString().trim();
         if(!TextUtils.isEmpty(email)){
@@ -56,6 +59,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful()){
+                        //Notify user that the email has been sent to them and transition to login screen.
                         Toast.makeText(getApplicationContext(), "We have sent you instructions to reset your password.", Toast.LENGTH_LONG).show();
                         Intent loginIntent = new Intent(ResetPasswordActivity.this, LoginActivity.class);
                         startActivity(loginIntent);
@@ -66,6 +70,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
             });
 
         }else{
+            //Notify the user that they must enter a registered email.
             Toast.makeText(getApplicationContext(), "Enter registered email to reset password.", Toast.LENGTH_LONG).show();
         }
 
