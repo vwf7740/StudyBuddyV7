@@ -29,6 +29,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mLoginPassword;
     private Button mLoginButton;
     private Button mSignUpButton;
+    private Button mForgotPasswordButton;
     private FirebaseAuth mAuth;
     private ProgressDialog mProgress;
     private DatabaseReference mDatabaseUsers;
@@ -46,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
         mLoginPassword = (EditText) findViewById(R.id.text_loginPassword);
         mLoginButton = (Button) findViewById(R.id.button_login);
         mSignUpButton = (Button) findViewById(R.id.button_signUp);
+        mForgotPasswordButton = (Button) findViewById((R.id.button_forgotPassword_login));
         //If user hits login button, execute checkLogin().
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,6 +61,13 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(registerIntent);
+            }
+        });
+        mForgotPasswordButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent resetPasswordIntent = new Intent(LoginActivity.this, ResetPasswordActivity.class);
+                startActivity(resetPasswordIntent);
             }
         });
     }

@@ -33,6 +33,7 @@ public class VerifyActivity extends AppCompatActivity {
         mVerifiedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "Login to complete verification.", Toast.LENGTH_LONG).show();
                 Intent loginIntent = new Intent(VerifyActivity.this, LoginActivity.class);
                 loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(loginIntent);
