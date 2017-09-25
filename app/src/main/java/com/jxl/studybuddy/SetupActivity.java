@@ -74,7 +74,7 @@ public class SetupActivity extends AppCompatActivity {
         mCourse4Button = (Button) findViewById(R.id.button_courseCode4_setup);
         mSubmitButton = (Button) findViewById(R.id.button_submit_setup);
 
-        mCurrentUser.addValueEventListener(new ValueEventListener() {
+        mCurrentUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 mNameTextView.setText(dataSnapshot.child("name").getValue().toString());
@@ -250,7 +250,7 @@ public class SetupActivity extends AppCompatActivity {
                     //Set courses to coursesString.
                     mDatabaseUsers.child(user_id).child("courses").setValue(coursesString);
                     //Set init_setup to true so that next time user logs in, they stay in the MainActivity.
-                    mDatabaseUsers.child(user_id).child("init_setup").setValue("true");
+                    mDatabaseUsers.child(user_id).child("init").setValue("complete");
                     mProgress.dismiss();
                     //Transition to MainActivity
                     Intent mainIntent = new Intent(SetupActivity.this, MainActivity.class);

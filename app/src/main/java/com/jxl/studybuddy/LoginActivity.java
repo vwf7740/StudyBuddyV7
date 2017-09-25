@@ -90,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
     //Check if authenticated user already exists on DB.
     private void checkUserExists() {
         final String user_id = mAuth.getCurrentUser().getUid();
-        mDatabaseUsers.addValueEventListener(new ValueEventListener() {
+        mDatabaseUsers.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.hasChild(user_id)){

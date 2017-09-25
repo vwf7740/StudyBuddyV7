@@ -1,6 +1,7 @@
 package com.jxl.studybuddy;
 
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.ActivityInfo;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -82,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
     private void checkUserExists() {
         mAuth.getCurrentUser().reload();
         final String user_id = mAuth.getCurrentUser().getUid();
-        mDatabaseUsers.addValueEventListener(new ValueEventListener() {
+        mDatabaseUsers.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.hasChild(user_id)){
@@ -91,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                         //Checks if the user is email verified. If not, signs out and changes to LoginActivity.
                         Toast.makeText(getApplicationContext(), "Email not verified.", Toast.LENGTH_LONG).show();
                         mAuth.signOut();
-                    }else if(dataSnapshot.child("init_setup").getValue().toString().equals("false")){
+                    }else if(dataSnapshot.child("init").getValue().toString().equals("incomplete")){
                         //If the user has not completed initial setup, go to SetupActivity.
                         Toast.makeText(getApplicationContext(), "Please setup your account", Toast.LENGTH_LONG).show();
                         Intent setupIntent = new Intent(MainActivity.this, SetupActivity.class);
@@ -103,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }else{
                     //No user found on DB, returns to LoginActivity.
-                    Toast.makeText(getApplicationContext(), "User not found.", Toast.LENGTH_LONG).show();
                     Intent loginIntent = new Intent(MainActivity.this, LoginActivity.class);
                     loginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(loginIntent);
