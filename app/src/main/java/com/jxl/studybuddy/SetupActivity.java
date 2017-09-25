@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -33,6 +35,8 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.util.HashSet;
 import java.util.List;
 
+import static android.text.InputType.TYPE_CLASS_TEXT;
+
 public class SetupActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
@@ -49,7 +53,8 @@ public class SetupActivity extends AppCompatActivity {
     private Button mSubmitButton;
     private Uri mImageUri = null;
     private ProgressDialog mProgress;
-
+    private InputFilter filter;
+    private String acceptedChars = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final int GALLERY_REQUEST_CODE = 1;
 
     @Override
@@ -61,11 +66,10 @@ public class SetupActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
         mDatabaseUsers.keepSynced(true);
-        mCurrentUser = FirebaseDatabase.getInstance().getReference().child("Users").child(mUser.getUid());
         mUser = mAuth.getCurrentUser();
+        mCurrentUser = FirebaseDatabase.getInstance().getReference().child("Users").child(mUser.getUid().toString());
         mStorageImage = FirebaseStorage.getInstance().getReference().child("profile_images");
         mProgress = new ProgressDialog(this);
-
         mNameTextView = (TextView) findViewById(R.id.textView_name_setup);
         mProfilePictureButton = (ImageButton) findViewById(R.id.button_profilePicture_setup);
         mCourse1Button = (Button) findViewById(R.id.button_courseCode1_setup);
@@ -87,15 +91,27 @@ public class SetupActivity extends AppCompatActivity {
         });
         //***********************************************************************************************************
         //Listeners for course code buttons. Opens a dialogue window for user to input or remove course codes.
-        //Only first button is visible until first code has been entered. Next button becomes available when previous
-        //button has a code in it. If code is removed by user, button is made invisible unless it is first button,
-        //in which case, it's text is reset to +NEW.
+        // If code is removed by user, it's text is reset to +NEW.
         //***********************************************************************************************************
+        //Input filter limits characters that can be entered in course codes to alphanumeric only.
+        filter = new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                for (int i = start; i < end; i++) {
+                    if (!Character.isLetterOrDigit(source.charAt(i))) {
+                        return "";
+                    }
+                }
+                return null;
+            }
+        };
+
         mCourse1Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(SetupActivity.this);
                 final EditText courseCodeInput = new EditText(SetupActivity.this);
+                courseCodeInput.setFilters(new InputFilter[]{filter});
                 alert.setView(courseCodeInput);
                 alert.setMessage("Add or remove course code").setCancelable(false)
 
@@ -103,13 +119,12 @@ public class SetupActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 mCourse1Button.setText(courseCodeInput.getText().toString().toUpperCase().trim());
-                                mCourse2Button.setVisibility(View.VISIBLE);
                             }
                         })
                         .setNegativeButton("Remove", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                mCourse1Button.setText("+NEW");
+                                mCourse1Button.setText("+New");
                             }
                         });
                 alert.show();
@@ -122,6 +137,7 @@ public class SetupActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(SetupActivity.this);
                 final EditText courseCodeInput = new EditText(SetupActivity.this);
+                courseCodeInput.setFilters(new InputFilter[]{filter});
                 alert.setView(courseCodeInput);
                 alert.setMessage("Add or remove course code").setCancelable(false)
 
@@ -129,14 +145,12 @@ public class SetupActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 mCourse2Button.setText(courseCodeInput.getText().toString().toUpperCase().trim());
-                                mCourse3Button.setVisibility(View.VISIBLE);
                             }
                         })
                         .setNegativeButton("Remove", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                mCourse2Button.setText("+NEW");
-                                mCourse2Button.setVisibility(View.INVISIBLE);
+                                mCourse2Button.setText("+New");
                             }
                         });
                 alert.show();
@@ -148,6 +162,7 @@ public class SetupActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(SetupActivity.this);
                 final EditText courseCodeInput = new EditText(SetupActivity.this);
+                courseCodeInput.setFilters(new InputFilter[]{filter});
                 alert.setView(courseCodeInput);
                 alert.setMessage("Add or remove course code").setCancelable(false)
 
@@ -155,14 +170,12 @@ public class SetupActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 mCourse3Button.setText(courseCodeInput.getText().toString().toUpperCase().trim());
-                                mCourse4Button.setVisibility(View.VISIBLE);
                             }
                         })
                         .setNegativeButton("Remove", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                mCourse3Button.setText("+NEW");
-                                mCourse3Button.setVisibility(View.INVISIBLE);
+                                mCourse3Button.setText("+New");
                             }
                         });
                 alert.show();
@@ -174,6 +187,7 @@ public class SetupActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(SetupActivity.this);
                 final EditText courseCodeInput = new EditText(SetupActivity.this);
+                courseCodeInput.setFilters(new InputFilter[]{filter});
                 alert.setView(courseCodeInput);
                 alert.setMessage("Add or remove course code").setCancelable(false)
 
@@ -181,14 +195,12 @@ public class SetupActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 mCourse4Button.setText(courseCodeInput.getText().toString().toUpperCase().trim());
-                                //mCourse4Button.setVisibility(View.VISIBLE);
                             }
                         })
                         .setNegativeButton("Remove", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                mCourse4Button.setText("+NEW");
-                                mCourse4Button.setVisibility(View.INVISIBLE);
+                                mCourse4Button.setText("+New");
                             }
                         });
                 alert.show();
@@ -223,7 +235,7 @@ public class SetupActivity extends AppCompatActivity {
     //Once the user has chosen a display image and input at least one course code, this method
     //writes the data to the DB and transitions to the MainActivity.
     private void setUpAccount() {
-        String courses = "";
+        String courses = "default";
         //Adds any entered course codes to a String object, separated with a new line as a delimeter.
         final String user_id = mAuth.getCurrentUser().getUid();
         if(!mCourse1Button.getText().toString().equals("+New")){
@@ -235,8 +247,9 @@ public class SetupActivity extends AppCompatActivity {
         }else if(!mCourse4Button.getText().toString().equals("+New")){
             courses += mCourse4Button.getText().toString() + "\n";
         }
+        System.out.println("Courses: " + courses);
         //If an image has been chosen and the courses string isn't empty, proceed.
-        if(mImageUri != null && !courses.equals("")){
+        if((mImageUri != null) && (!courses.equals("default"))){
             mProgress.setMessage("Saving changes...");
             mProgress.show();
             final String coursesString = courses;
@@ -249,8 +262,6 @@ public class SetupActivity extends AppCompatActivity {
                     mDatabaseUsers.child(user_id).child("image").setValue(downloadURI);
                     //Set courses to coursesString.
                     mDatabaseUsers.child(user_id).child("courses").setValue(coursesString);
-                    //Set init_setup to true so that next time user logs in, they stay in the MainActivity.
-                    mDatabaseUsers.child(user_id).child("init").setValue("complete");
                     mProgress.dismiss();
                     //Transition to MainActivity
                     Intent mainIntent = new Intent(SetupActivity.this, MainActivity.class);

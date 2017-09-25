@@ -78,18 +78,14 @@ public class RegisterActivity extends AppCompatActivity {
                     if(task.isSuccessful()){
                         String user_id = mAuth.getCurrentUser().getUid();
                         DatabaseReference current_user_db = mDatabaseUsers.child(user_id);
-                        System.out.println("TWAT");
                         current_user_db.child("name").setValue(name);
                         current_user_db.child("image").setValue("default");
                         current_user_db.child("courses").setValue("default");
-                        current_user_db.child("init").setValue("incomplete");
-                        System.out.println("PIECE OF SHIT");
                         mProgress.dismiss();
                         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 //Signs in the newly created user, if it's successful, executes verifyEmail().
-                                System.out.println("FUUCKING WORK");
                                 verifyEmail();
 
                             }

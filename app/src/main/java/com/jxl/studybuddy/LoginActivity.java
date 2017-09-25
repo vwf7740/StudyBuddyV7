@@ -93,21 +93,26 @@ public class LoginActivity extends AppCompatActivity {
         mDatabaseUsers.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                //Check if user exists.
                 if(dataSnapshot.hasChild(user_id)){
-                    final FirebaseUser user = mAuth.getCurrentUser();
+                    //Check if user is email verified.
                     if(!mAuth.getCurrentUser().isEmailVerified()){
+                        //Send user back to login if not verified.
                         Toast.makeText(getApplicationContext(), "Email not verified.", Toast.LENGTH_LONG).show();
                         mAuth.signOut();
+                        //If user is verified, check if user has set up account.
+                    }else if(dataSnapshot.child(user_id).child("image").getValue().toString().equals("default")){
+                        //If user hasn't set up their account, transition to SetupActivity.
+                        Toast.makeText(getApplicationContext(), "Please setup your account", Toast.LENGTH_LONG).show();
+                        Intent setupIntent = new Intent(LoginActivity.this, SetupActivity.class);
+                        setupIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(setupIntent);
                     }else{
+                        //If the user exists and is email verified, transition to MainActivity.
                         Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
-                        mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(mainIntent);
                     }
-                }else{
-                    Toast.makeText(getApplicationContext(), "Please setup your account", Toast.LENGTH_LONG).show();
-                    Intent setupIntent = new Intent(LoginActivity.this, SetupActivity.class);
-                    setupIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); //User can't leave login page without logging in or registering
-                    startActivity(setupIntent);
                 }
             }
 

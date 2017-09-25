@@ -51,15 +51,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
+
     //Populates MainActivity options menu
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Override
+
     //If user hits logout button in MainActivity options menu, user is signed out and app returns to LoginActivity.
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.menu_logout){
             logOut();
@@ -68,10 +70,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //This method runs when MainActivity starts, even before onCreate()
+    @Override
     protected void onStart(){
         super.onStart();
         //Enables detection of authenticated users as soon as activity starts.
         mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        mAuth.removeAuthStateListener(mAuthListener);
     }
 
     //Signs out the currently logged in user
@@ -92,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                         //Checks if the user is email verified. If not, signs out and changes to LoginActivity.
                         Toast.makeText(getApplicationContext(), "Email not verified.", Toast.LENGTH_LONG).show();
                         mAuth.signOut();
-                    }else if(dataSnapshot.child("init").getValue().toString().equals("incomplete")){
+                    }else if(dataSnapshot.child(user_id).child("image").getValue().toString().equals("default")){
                         //If the user has not completed initial setup, go to SetupActivity.
                         Toast.makeText(getApplicationContext(), "Please setup your account", Toast.LENGTH_LONG).show();
                         Intent setupIntent = new Intent(MainActivity.this, SetupActivity.class);
