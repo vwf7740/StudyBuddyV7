@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".MainActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
@@ -26,7 +26,12 @@
         </activity>
         <activity android:name=".SetupActivity" />
         <activity android:name=".VerifyActivity" />
-        <activity android:name=".ResetPasswordActivity"></activity>
+        <activity android:name=".ResetPasswordActivity" />
+        <activity android:name=".UserProfileActivity" />
+        <activity android:name=".BaseActivity" />
+        <activity android:name=".BuddiesActivity" />
+        <activity android:name=".MessagesActivity" />
+        <activity android:name=".LogoutActivity"></activity>
     </application>
 
 </manifest>

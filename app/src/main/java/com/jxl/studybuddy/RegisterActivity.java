@@ -32,6 +32,7 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabaseUsers;
     private ProgressDialog mProgress;
+    private Button mBackToLoginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +47,15 @@ public class RegisterActivity extends AppCompatActivity {
         mEmailField = (EditText) findViewById(R.id.text_email);
         mPasswordField = (EditText) findViewById(R.id.text_password);
         mRegisterButton = (Button) findViewById(R.id.button_register);
+        mBackToLoginButton = (Button) findViewById(R.id.button_backToLogin_register);
+
+        mBackToLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent loginIntent = new Intent(RegisterActivity.this, LoginActivity.class);
+                startActivity(loginIntent);
+            }
+        });
 
         //When user hits register button, execute startRegister() but only if password is longer than 6 chars.
         mRegisterButton.setOnClickListener(new View.OnClickListener() {
@@ -80,6 +90,7 @@ public class RegisterActivity extends AppCompatActivity {
                         DatabaseReference current_user_db = mDatabaseUsers.child(user_id);
                         current_user_db.child("name").setValue(name);
                         current_user_db.child("image").setValue("default");
+                        current_user_db.child("imageUri").setValue("default");
                         current_user_db.child("courses").setValue("default");
                         mProgress.dismiss();
                         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {

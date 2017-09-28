@@ -6,4 +6,68 @@
     android:layout_height="match_parent"
     tools:context="com.jxl.studybuddy.MainActivity">
 
+    <ImageView
+        android:alpha="0.5"
+        android:id="@+id/image_logo_register"
+        android:layout_width="264dp"
+        android:layout_height="203dp"
+        app:srcCompat="@drawable/sb_logo"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="40dp" />
+
+    <TextView
+        android:id="@+id/text_welcome_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Welcome to StudyBuddy,"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimary"
+        android:textSize="24sp"
+        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image_logo_register" />
+
+    <TextView
+        android:id="@+id/textView_name_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="NAME HERE"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="36sp"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_welcome_login" />
+
+    <Button
+        style="@style/ButtonTheme"
+        android:id="@+id/button_findBuddy_main"
+        android:layout_width="344dp"
+        android:layout_height="wrap_content"
+        android:text="Find a buddy"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        android:layout_marginBottom="7dp" />
+
+    <TextView
+        android:id="@+id/text_info_main"
+        android:layout_width="227dp"
+        android:layout_height="116dp"
+        android:layout_marginTop="20dp"
+        android:text="To get started, use the buddy search to find other students doing the same courses at your university"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_name_main" />
+
 </android.support.constraint.ConstraintLayout>

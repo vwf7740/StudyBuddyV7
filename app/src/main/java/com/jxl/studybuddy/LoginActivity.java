@@ -89,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
                         checkUserExists();
                     }else{
                         mProgress.dismiss();
-                        Toast.makeText(LoginActivity.this, "Login Error", Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, "Invalid login.", Toast.LENGTH_LONG).show();
                     }
                 }
             });

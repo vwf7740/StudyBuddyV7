@@ -13,10 +13,13 @@ import android.text.Spanned;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,13 +34,17 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-public class SetupActivity extends AppCompatActivity {
+import java.net.URL;
+import java.util.StringTokenizer;
+
+public class UserProfileActivity extends BaseActivity {
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabaseUsers;
     private DatabaseReference mCurrentUser;
     private FirebaseUser mUser;
     private StorageReference mStorageImage;
+    private StorageReference mStorageUserImage;
     private TextView mNameTextView;
     private ImageButton mProfilePictureButton;
     private Button mCourse1Button;
@@ -53,7 +60,10 @@ public class SetupActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setup);
+
+        FrameLayout contentFrameLayout = (FrameLayout) findViewById(R.id.flContent); //Remember this is the FrameLayout area within your base_main.xml
+        getLayoutInflater().inflate(R.layout.activity_user_profile, contentFrameLayout);
+
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         mAuth = FirebaseAuth.getInstance();
@@ -62,19 +72,46 @@ public class SetupActivity extends AppCompatActivity {
         mUser = mAuth.getCurrentUser();
         mCurrentUser = FirebaseDatabase.getInstance().getReference().child("Users").child(mUser.getUid().toString());
         mStorageImage = FirebaseStorage.getInstance().getReference().child("profile_images");
+        mStorageUserImage = FirebaseStorage.getInstance().getReference();
         mProgress = new ProgressDialog(this);
         mNameTextView = (TextView) findViewById(R.id.textView_name_profile);
-        mProfilePictureButton = (ImageButton) findViewById(R.id.button_profilePicture_setup);
-        mCourse1Button = (Button) findViewById(R.id.button_courseCode1_setup);
-        mCourse2Button = (Button) findViewById(R.id.button_courseCode2_setup);
-        mCourse3Button = (Button) findViewById(R.id.button_courseCode3_setup);
-        mCourse4Button = (Button) findViewById(R.id.button_courseCode4_setup);
-        mSubmitButton = (Button) findViewById(R.id.button_submit_setup);
+        mProfilePictureButton = (ImageButton) findViewById(R.id.button_profilePicture_profile);
+        mCourse1Button = (Button) findViewById(R.id.button_courseCode1_profile);
+        mCourse2Button = (Button) findViewById(R.id.button_courseCode2_profile);
+        mCourse3Button = (Button) findViewById(R.id.button_courseCode3_profile);
+        mCourse4Button = (Button) findViewById(R.id.button_courseCode4_profile);
+        mSubmitButton = (Button) findViewById(R.id.button_submit_profile);
+
 
         mCurrentUser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                mProgress.setMessage("Fetching profile data...");
+                mProgress.show();
+                mImageUri = Uri.parse(dataSnapshot.child("imageUri").getValue().toString());
                 mNameTextView.setText(dataSnapshot.child("name").getValue().toString());
+                String imageUrl = dataSnapshot.child("image").getValue().toString();
+                Glide.with(getApplicationContext())
+                        .load(imageUrl)
+                        .into(mProfilePictureButton);
+                String savedCourses = dataSnapshot.child("courses").getValue().toString();
+                System.out.println("Courses:" + savedCourses);
+                StringTokenizer tk = new StringTokenizer(savedCourses, "#");
+                int count = 1;
+                while(tk.hasMoreTokens()){
+                    if(count == 1){
+                        mCourse1Button.setText(tk.nextToken());
+                    }else if(count == 2){
+                        mCourse2Button.setText(tk.nextToken());
+                    }else if(count == 3){
+                        mCourse3Button.setText(tk.nextToken());
+                    }else if(count == 4){
+                        mCourse4Button.setText(tk.nextToken());
+                    }
+
+                    count++;
+                }
+                mProgress.dismiss();
             }
 
             @Override
@@ -102,8 +139,8 @@ public class SetupActivity extends AppCompatActivity {
         mCourse1Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder alert = new AlertDialog.Builder(SetupActivity.this);
-                final EditText courseCodeInput = new EditText(SetupActivity.this);
+                AlertDialog.Builder alert = new AlertDialog.Builder(UserProfileActivity.this);
+                final EditText courseCodeInput = new EditText(UserProfileActivity.this);
                 courseCodeInput.setFilters(new InputFilter[]{filter});
                 alert.setView(courseCodeInput);
                 alert.setMessage("Add or remove course code").setCancelable(false)
@@ -128,8 +165,8 @@ public class SetupActivity extends AppCompatActivity {
         mCourse2Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder alert = new AlertDialog.Builder(SetupActivity.this);
-                final EditText courseCodeInput = new EditText(SetupActivity.this);
+                AlertDialog.Builder alert = new AlertDialog.Builder(UserProfileActivity.this);
+                final EditText courseCodeInput = new EditText(UserProfileActivity.this);
                 courseCodeInput.setFilters(new InputFilter[]{filter});
                 alert.setView(courseCodeInput);
                 alert.setMessage("Add or remove course code").setCancelable(false)
@@ -153,8 +190,8 @@ public class SetupActivity extends AppCompatActivity {
         mCourse3Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder alert = new AlertDialog.Builder(SetupActivity.this);
-                final EditText courseCodeInput = new EditText(SetupActivity.this);
+                AlertDialog.Builder alert = new AlertDialog.Builder(UserProfileActivity.this);
+                final EditText courseCodeInput = new EditText(UserProfileActivity.this);
                 courseCodeInput.setFilters(new InputFilter[]{filter});
                 alert.setView(courseCodeInput);
                 alert.setMessage("Add or remove course code").setCancelable(false)
@@ -178,8 +215,8 @@ public class SetupActivity extends AppCompatActivity {
         mCourse4Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder alert = new AlertDialog.Builder(SetupActivity.this);
-                final EditText courseCodeInput = new EditText(SetupActivity.this);
+                AlertDialog.Builder alert = new AlertDialog.Builder(UserProfileActivity.this);
+                final EditText courseCodeInput = new EditText(UserProfileActivity.this);
                 courseCodeInput.setFilters(new InputFilter[]{filter});
                 alert.setView(courseCodeInput);
                 alert.setMessage("Add or remove course code").setCancelable(false)
@@ -211,6 +248,9 @@ public class SetupActivity extends AppCompatActivity {
             }
         });
 
+        //If user hits remove account button, removeAccount() method is executed.
+
+
         //When user hits the default ImageButton, their device gallery is opened.
         //User must choose an image that is square cropped automatically.
         mProfilePictureButton.setOnClickListener(new View.OnClickListener() {
@@ -230,7 +270,7 @@ public class SetupActivity extends AppCompatActivity {
     private void setUpAccount() {
         String courses = "";
         //Adds any entered course codes to a String object, separated with a # as a delimeter.
-        final String user_id = mAuth.getCurrentUser().getUid();
+        final String user_id = mAuth.getCurrentUser().getUid().toString();
         if(!mCourse1Button.getText().toString().equals("+New")){
             courses += "#" + mCourse1Button.getText().toString();
         }
@@ -245,7 +285,7 @@ public class SetupActivity extends AppCompatActivity {
         }
         System.out.println("Courses: " + courses);
         //If an image has been chosen and the courses string isn't empty, proceed.
-        if((mImageUri != null) && (!courses.equals(""))){
+        if((mImageUri != null) &&(!courses.equals(""))){
             mProgress.setMessage("Saving changes...");
             mProgress.show();
             final String coursesString = courses;
@@ -258,19 +298,14 @@ public class SetupActivity extends AppCompatActivity {
                     mDatabaseUsers.child(user_id).child("image").setValue(downloadURI);
                     //Set courses to coursesString.
                     mDatabaseUsers.child(user_id).child("courses").setValue(coursesString);
-                    mDatabaseUsers.child(user_id).child("imageUri").setValue(mImageUri.toString());
                     mProgress.dismiss();
-                    //Transition to MainActivity
-                    Intent mainIntent = new Intent(SetupActivity.this, MainActivity.class);
-                    startActivity(mainIntent);
                 }
             });
 
         }else{
             //Do not proceed if Image is still default and/or courses String is empty.
-            Toast.makeText(getApplicationContext(), "Please choose a profile picture, and at least one course code.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "You must choose at least one course code", Toast.LENGTH_LONG).show();
         }
-
     }
 
     @Override
@@ -296,3 +331,4 @@ public class SetupActivity extends AppCompatActivity {
         }
     }
 }
+

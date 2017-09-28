@@ -4,13 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.jxl.studybuddy.SetupActivity"
-    tools:layout_editor_absoluteY="81dp"
-    tools:layout_editor_absoluteX="0dp">
+    tools:context="com.jxl.studybuddy.UserProfileActivity">
 
     <ImageButton
-        android:alpha="0.75"
-        android:id="@+id/button_profilePicture_setup"
+        android:id="@+id/button_profilePicture_profile"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_marginEnd="8dp"
@@ -18,6 +15,7 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="47dp"
+        android:alpha="0.75"
         android:background="@android:color/transparent"
         android:scaleType="centerCrop"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -25,8 +23,99 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/default_image" />
 
+    <TextView
+        android:id="@+id/textView_name_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NAME"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="15dp"
+        app:layout_constraintTop_toBottomOf="@+id/button_profilePicture_profile" />
+
+    <TextView
+        android:id="@+id/textView_editCourses_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="15dp"
+        android:text="Edit display picture and course codes"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_name_profile" />
+
+    <GridLayout
+        android:id="@+id/grid_courseCodes_profile"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="70dp"
+        android:layout_marginLeft="70dp"
+        android:layout_marginRight="70dp"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="15dp"
+        android:columnCount="2"
+        android:rowCount="2"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_editCourses_profile"
+        tools:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/button_courseCode1_profile"
+            style="@style/ButtonTheme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginBottom="35dp"
+            android:backgroundTint="@color/courseButtonColor"
+            android:digits="abcdefghijklmnopqrstuvwxyz1234567890"
+            android:text="+New"
+            android:visibility="visible" />
+
+        <Button
+            android:id="@+id/button_courseCode2_profile"
+            style="@style/ButtonTheme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:backgroundTint="@color/courseButtonColor"
+            android:digits="abcdefghijklmnopqrstuvwxyz1234567890"
+            android:text="+New"
+            android:visibility="visible" />
+
+        <Button
+            android:id="@+id/button_courseCode3_profile"
+            style="@style/ButtonTheme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="2dp"
+            android:backgroundTint="@color/courseButtonColor"
+            android:digits="abcdefghijklmnopqrstuvwxyz1234567890"
+            android:text="+New"
+            android:visibility="visible" />
+
+        <Button
+            android:id="@+id/button_courseCode4_profile"
+            style="@style/ButtonTheme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:backgroundTint="@color/courseButtonColor"
+            android:digits="abcdefghijklmnopqrstuvwxyz1234567890"
+            android:text="+New"
+            android:visibility="visible" />
+    </GridLayout>
+
     <Button
-        android:id="@+id/button_submit_setup"
+        android:id="@+id/button_submit_profile"
         style="@style/ButtonTheme"
         android:layout_width="344dp"
         android:layout_height="wrap_content"
@@ -40,107 +129,15 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
-    <TextView
-        android:id="@+id/textView_editCourses_profile"
-        android:layout_width="wrap_content"
+    <Button
+        style="@style/ButtonTheme"
+        android:id="@+id/button_removeAccount_profile"
+        android:layout_width="344dp"
         android:layout_height="wrap_content"
-        android:text="Edit course codes"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginRight="8dp"
+        android:text="Remove account"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@+id/textView_name_profile" />
-
-    <TextView
-        android:id="@+id/textView_name_profile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="NAME"
-        android:textAlignment="center"
-        android:textSize="24sp"
-        android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_profilePicture_setup" />
-
-    <ImageView
-        android:alpha="0.5"
-        android:id="@+id/image_logo_setup"
-        android:layout_width="91dp"
-        android:layout_height="75dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:srcCompat="@drawable/sb_logo"
-        app:layout_constraintHorizontal_bias="0.501"
-        android:layout_marginBottom="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/button_submit_setup" />
-
-    <GridLayout
-        android:id="@+id/grid_courseCodes_setup"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="70dp"
-        android:layout_marginLeft="70dp"
-        android:layout_marginRight="70dp"
-        android:layout_marginStart="70dp"
-        android:layout_marginTop="26dp"
-        android:columnCount="2"
-        android:rowCount="2"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_editCourses_profile"
-        tools:layout_height="wrap_content">
-
-        <Button
-            android:id="@+id/button_courseCode1_setup"
-            style="@style/ButtonTheme"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_marginBottom="35dp"
-            android:backgroundTint="@color/courseButtonColor"
-            android:digits="abcdefghijklmnopqrstuvwxyz1234567890"
-            android:text="+New"
-            android:visibility="visible" />
-
-        <Button
-            android:id="@+id/button_courseCode2_setup"
-            style="@style/ButtonTheme"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:backgroundTint="@color/courseButtonColor"
-            android:digits="abcdefghijklmnopqrstuvwxyz1234567890"
-            android:text="+New"
-            android:visibility="visible" />
-
-        <Button
-            android:id="@+id/button_courseCode3_setup"
-            style="@style/ButtonTheme"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="2dp"
-            android:backgroundTint="@color/courseButtonColor"
-            android:digits="abcdefghijklmnopqrstuvwxyz1234567890"
-            android:text="+New"
-            android:visibility="visible" />
-
-        <Button
-            android:id="@+id/button_courseCode4_setup"
-            style="@style/ButtonTheme"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:backgroundTint="@color/courseButtonColor"
-            android:digits="abcdefghijklmnopqrstuvwxyz1234567890"
-            android:text="+New"
-            android:visibility="visible" />
-    </GridLayout>
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/button_submit_profile" />
 
 </android.support.constraint.ConstraintLayout>
