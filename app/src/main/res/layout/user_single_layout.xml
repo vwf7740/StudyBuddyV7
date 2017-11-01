@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/user_view_search"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/imageView_displayPicture_users"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/default_image" />
+
+    <TextView
+        android:id="@+id/textView_name_users"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/imageView_displayPicture_users"
+        android:layout_marginStart="23dp"
+        android:layout_marginTop="13dp"
+        android:layout_toEndOf="@+id/imageView_displayPicture_users"
+        android:text="USER NAME"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView_matchedCourses_users"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView_name_users"
+        android:layout_below="@+id/textView_name_users"
+        android:layout_marginTop="7dp" />
+
+    <ImageView
+        android:id="@+id/image_online_icon"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/textView_name_users"
+        android:layout_marginEnd="11dp"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/sb_logo" />
+
+</RelativeLayout>

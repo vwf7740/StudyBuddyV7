@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/message_sent_single_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/sent_chat_message_image"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="28dp"
+        android:adjustViewBounds="false"
+        android:cropToPadding="false"
+        android:src="@drawable/default_image"
+        tools:layout_width="56dp" />
+
+    <TextView
+        android:id="@+id/sent_message_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/sent_chat_message_image"
+        android:layout_marginEnd="22dp"
+        android:layout_marginTop="11dp"
+        android:layout_toStartOf="@+id/sent_chat_message_image"
+        android:background="@drawable/sent_text_message_background"
+        android:padding="7dp"
+        android:paddingBottom="7dp"
+        android:paddingEnd="7dp"
+        android:paddingLeft="7dp"
+        android:paddingRight="7dp"
+        android:paddingStart="7dp"
+        android:paddingTop="7dp"
+        android:text="TextView"
+        android:textColor="@android:color/background_light"
+        tools:padding="7dp" />
+
+    <TextView
+        android:id="@+id/sent_message_userName_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="18dp"
+        android:layout_toStartOf="@+id/sent_chat_message_image"
+        android:text="USERNAME"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/sent_message_time_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/sent_message_userName_view"
+        android:layout_centerHorizontal="true"
+        android:text="00:00"
+        android:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/sent_message_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/sent_message_text_view"
+        android:layout_below="@+id/sent_chat_message_image"
+        android:adjustViewBounds="true"
+        android:scaleType="centerInside" />
+
+</RelativeLayout>

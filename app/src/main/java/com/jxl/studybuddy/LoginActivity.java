@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -84,6 +85,16 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()){
+                        String tokenID = FirebaseInstanceId.getInstance().getToken();
+                        final String currentUser = mAuth.getCurrentUser().getUid().toString();
+                        mDatabaseUsers.child(currentUser).child("token_id").setValue(tokenID).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    //mDatabaseUsers.child(currentUser).child("online").setValue(true);
+                                }
+                            }
+                        });
                         mProgress.dismiss();
                         //If authentication is successful, execute checkUserExists().
                         checkUserExists();

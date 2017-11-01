@@ -19,8 +19,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.Console;
+import java.util.HashMap;
 import java.util.List;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -69,11 +71,10 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     //Creates a new user on the DB with their name, email and password, and default values for
-    //image, courses and sets false for init_setup to indicate they need to complete initial setup
+    //thumb_image, courses and sets false for init_setup to indicate they need to complete initial setup
     //before they can use the app.
     private void startRegister() {
         final String name = mNameField.getText().toString().trim();
@@ -88,17 +89,31 @@ public class RegisterActivity extends AppCompatActivity {
                     if(task.isSuccessful()){
                         String user_id = mAuth.getCurrentUser().getUid();
                         DatabaseReference current_user_db = mDatabaseUsers.child(user_id);
-                        current_user_db.child("name").setValue(name);
-                        current_user_db.child("image").setValue("default");
-                        current_user_db.child("imageUri").setValue("default");
-                        current_user_db.child("courses").setValue("default");
-                        mProgress.dismiss();
-                        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        String tokenID = FirebaseInstanceId.getInstance().getToken();
+                        HashMap<String, String> userMap = new HashMap<>();
+                        userMap.put("name", name);
+                        userMap.put("image", "default");
+                        userMap.put("thumb_image", "default");
+                        userMap.put("image", "default");
+                        userMap.put("courses", "default");
+                        userMap.put("token_id", tokenID);
+                        current_user_db.setValue(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                //Signs in the newly created user, if it's successful, executes verifyEmail().
-                                verifyEmail();
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    mProgress.dismiss();
+                                    mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<AuthResult> task) {
+                                            //Signs in the newly created user, if it's successful, executes verifyEmail().
+                                            verifyEmail();
 
+                                        }
+                                    });
+                                }else{
+                                    mProgress.dismiss();
+                                    Toast.makeText(getApplicationContext(), "Failed to register new user.", Toast.LENGTH_LONG).show();
+                                }
                             }
                         });
                     }
@@ -127,6 +142,6 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
+
 }

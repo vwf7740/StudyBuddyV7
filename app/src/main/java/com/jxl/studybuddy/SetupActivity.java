@@ -4,11 +4,15 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.text.Spanned;
 import android.view.View;
 import android.widget.Button;
@@ -17,7 +21,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -31,6 +37,14 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Random;
+
+import id.zelory.compressor.Compressor;
+
 public class SetupActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
@@ -38,6 +52,7 @@ public class SetupActivity extends AppCompatActivity {
     private DatabaseReference mCurrentUser;
     private FirebaseUser mUser;
     private StorageReference mStorageImage;
+    private byte[] mThumbByte;
     private TextView mNameTextView;
     private ImageButton mProfilePictureButton;
     private Button mCourse1Button;
@@ -47,8 +62,8 @@ public class SetupActivity extends AppCompatActivity {
     private Button mSubmitButton;
     private Uri mImageUri = null;
     private ProgressDialog mProgress;
-    private InputFilter filter;
     private static final int GALLERY_REQUEST_CODE = 1;
+    private InputFilter filter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +75,7 @@ public class SetupActivity extends AppCompatActivity {
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
         mDatabaseUsers.keepSynced(true);
         mUser = mAuth.getCurrentUser();
-        mCurrentUser = FirebaseDatabase.getInstance().getReference().child("Users").child(mUser.getUid().toString());
+        mCurrentUser = FirebaseDatabase.getInstance().getReference().child("Users").child(mUser.getUid());
         mStorageImage = FirebaseStorage.getInstance().getReference().child("profile_images");
         mProgress = new ProgressDialog(this);
         mNameTextView = (TextView) findViewById(R.id.textView_name_profile);
@@ -82,10 +97,7 @@ public class SetupActivity extends AppCompatActivity {
 
             }
         });
-        //***********************************************************************************************************
-        //Listeners for course code buttons. Opens a dialogue window for user to input or remove course codes.
-        // If code is removed by user, it's text is reset to +NEW.
-        //***********************************************************************************************************
+
         //Input filter limits characters that can be entered in course codes to alphanumeric only.
         filter = new InputFilter() {
             @Override
@@ -98,6 +110,10 @@ public class SetupActivity extends AppCompatActivity {
                 return null;
             }
         };
+        //***********************************************************************************************************
+        //Listeners for course code buttons. Opens a dialogue window for user to input or remove course codes.
+        // If code is removed by user, it's text is reset to +NEW.
+        //***********************************************************************************************************
 
         mCourse1Button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -212,11 +228,11 @@ public class SetupActivity extends AppCompatActivity {
         });
 
         //When user hits the default ImageButton, their device gallery is opened.
-        //User must choose an image that is square cropped automatically.
+        //User must choose an thumb_image that is square cropped automatically.
         mProfilePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent galleryIntent = new Intent();
+                Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
                 galleryIntent.setType("image/*");
                 startActivityForResult(galleryIntent, GALLERY_REQUEST_CODE);
@@ -225,7 +241,7 @@ public class SetupActivity extends AppCompatActivity {
         });
     }
 
-    //Once the user has chosen a display image and input at least one course code, this method
+    //Once the user has chosen a display thumb_image and input at least one course code, this method
     //writes the data to the DB and transitions to the MainActivity.
     private void setUpAccount() {
         String courses = "";
@@ -244,33 +260,75 @@ public class SetupActivity extends AppCompatActivity {
             courses += "#" + mCourse4Button.getText().toString();
         }
         System.out.println("Courses: " + courses);
-        //If an image has been chosen and the courses string isn't empty, proceed.
-        if((mImageUri != null) && (!courses.equals(""))){
-            mProgress.setMessage("Saving changes...");
-            mProgress.show();
-            final String coursesString = courses;
-            StorageReference filePath = mStorageImage.child(mImageUri.getLastPathSegment());
-            filePath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        //If an thumb_image has been chosen and the courses string isn't empty, proceed.
+        if((mImageUri != null) && (!courses.equals(""))) {
+            File thumbFile = new File(mImageUri.getPath());
+            try {
+                Bitmap thumbBitmap = new Compressor(this)
+                        .setMaxHeight(200)
+                        .setMaxWidth(200)
+                        .setQuality(75)
+                        .compressToBitmap(thumbFile);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                thumbBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                byte[] thumbByte = baos.toByteArray();
+                mThumbByte = thumbByte;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            final String currentUID = mAuth.getCurrentUser().getUid().toString();
+            StorageReference filePath = mStorageImage.child(currentUID + ".jpg");
+            final StorageReference thumbFilePath = mStorageImage.child("thumb_images").child(currentUID + ".jpg");
+            filePath.putFile(mImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
-                public void onSuccess(final UploadTask.TaskSnapshot taskSnapshot) {
-                    @SuppressWarnings("VisibleForTests")final String downloadURI = taskSnapshot.getDownloadUrl().toString();
-                    //Set image to URL in DB.
-                    mDatabaseUsers.child(user_id).child("image").setValue(downloadURI);
-                    //Set courses to coursesString.
-                    mDatabaseUsers.child(user_id).child("courses").setValue(coursesString);
-                    mDatabaseUsers.child(user_id).child("imageUri").setValue(mImageUri.toString());
-                    mProgress.dismiss();
-                    //Transition to MainActivity
-                    Intent mainIntent = new Intent(SetupActivity.this, MainActivity.class);
-                    startActivity(mainIntent);
+                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                    if(task.isSuccessful()){
+                        @SuppressWarnings("VisibleForTests")String downloadURL = task.getResult().getDownloadUrl().toString();
+                        UploadTask uploadTask = thumbFilePath.putBytes(mThumbByte);
+                        uploadTask.addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                @SuppressWarnings("VisibleForTests")String thumbDownloadUrl = task.getResult().getDownloadUrl().toString();
+                                if(task.isSuccessful()){
+                                    DatabaseReference current_user_db = mDatabaseUsers.child(currentUID);
+                                    current_user_db.child("thumb_image").setValue(thumbDownloadUrl);
+                                }
+                            }
+                        });
+                        DatabaseReference current_user_db = mDatabaseUsers.child(currentUID);
+                        //Set thumb_image to URL in DB.
+                        current_user_db.child("image").setValue(downloadURL).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    //Image uploaded successfully, try upload courses.
+                                }
+                            }
+                        });
+                    }else{
+                        Toast.makeText(getApplicationContext(), "Failed to upload thumb_image.", Toast.LENGTH_LONG).show();
+                    }
                 }
             });
-
-        }else{
+            final String coursesString = courses;
+            DatabaseReference current_user_db = mDatabaseUsers.child(user_id);
+            //Set courses to coursesString.
+            current_user_db.child("courses").setValue(coursesString).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful()){
+                        //Transition to MainActivity
+                        Intent mainIntent = new Intent(SetupActivity.this, MainActivity.class);
+                        startActivity(mainIntent);
+                    }else{
+                        Toast.makeText(getApplicationContext(), "Failed to upload courses.", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+        }else {
             //Do not proceed if Image is still default and/or courses String is empty.
             Toast.makeText(getApplicationContext(), "Please choose a profile picture, and at least one course code.", Toast.LENGTH_LONG).show();
         }
-
     }
 
     @Override

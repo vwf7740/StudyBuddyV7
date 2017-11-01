@@ -14,10 +14,6 @@
             android:icon="@drawable/ic_hollow_circle"
             android:title="Buddies" />
         <item
-            android:id="@+id/nav_activity_messages"
-            android:icon="@drawable/ic_hollow_circle"
-            android:title="Messages" />
-        <item
             android:id="@+id/nav_activity_logout"
             android:icon="@drawable/ic_hollow_circle"
             android:title="Log out" />

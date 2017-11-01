@@ -29,7 +29,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDbuHmKaPDRra8NvJ-9P62LKr4zHCz_wqs"
+          "current_key": "AIzaSyB29nz8qRRuSX1a4GVORwb34qRwiofwy1w"
         }
       ],
       "services": {
@@ -58,6 +58,22 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "58606772246-hb532730t7cubilg2qe4plt4ng75v2ob.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jxl.studybuddy",
+            "certificate_hash": "199256c77b937d1fca9b260b2cfadb81cb85a5be"
+          }
+        },
+        {
+          "client_id": "58606772246-el2o0sj2hej7cej4aircjdjenm6nffmi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jxl.studybuddy",
+            "certificate_hash": "caf1e7ffa9e8754df5ae78c5a8efaa1b65600ef5"
+          }
+        },
         {
           "client_id": "58606772246-knk0tt45prkh8vnq6gv6crsb7onhjkhh.apps.googleusercontent.com",
           "client_type": 1,

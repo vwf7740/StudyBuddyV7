@@ -16,40 +16,27 @@ public class BaseActivity extends AppCompatActivity {
     protected DrawerLayout mDrawer;
     protected Toolbar toolbar;
     protected NavigationView nvDrawer;
-    // Make sure to be using android.support.v7.app.ActionBarDrawerToggle version.
-    // The android.support.v4.app.ActionBarDrawerToggle has been deprecated.
     protected ActionBarDrawerToggle drawerToggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
-
-
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        // Find our drawer view
         nvDrawer = (NavigationView) findViewById(R.id.nvView);
         // Setup drawer view
         setupDrawerContent(nvDrawer);
         drawerToggle = setupDrawerToggle();
-
         // Tie DrawerLayout events to the ActionBarToggle
         mDrawer.addDrawerListener(drawerToggle);
-
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {
-        // NOTE: Make sure you pass in a valid toolbar reference.  ActionBarDrawToggle() does not require it
-        // and will not render the hamburger icon without it.
         return new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.drawer_open,  R.string.drawer_close);
     }
 
-    // `onPostCreate` called when activity start-up is complete after `onStart()`
-    // NOTE 1: Make sure to override the method with only a single `Bundle` argument
-    // Note 2: Make sure you implement the correct `onPostCreate(Bundle savedInstanceState)` method.
-    // There are 2 signatures and only `onPostCreate(Bundle state)` shows the hamburger icon.
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -75,10 +62,11 @@ public class BaseActivity extends AppCompatActivity {
                 });
     }
 
+    //Handles item selection in navigation drawer menu. Transition to selected activity and close drawer.
     public void selectDrawerItem(MenuItem menuItem) {
         switch(menuItem.getItemId()) {
             case R.id.nav_activity_main:
-                Intent mainIntent = new Intent(getApplicationContext(), UserProfileActivity.class);
+                Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
                 mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(mainIntent);
                 mDrawer.closeDrawers();
@@ -95,12 +83,6 @@ public class BaseActivity extends AppCompatActivity {
                 startActivity(buddiesIntent);
                 mDrawer.closeDrawers();
                 break;
-            case R.id.nav_activity_messages:
-                Intent messagesIntent = new Intent(getApplicationContext(), MessagesActivity.class);
-                messagesIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(messagesIntent);
-                mDrawer.closeDrawers();
-                break;
             case R.id.nav_activity_logout:
                 Intent logoutIntent = new Intent(getApplicationContext(), LogoutActivity.class);
                 logoutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -110,7 +92,6 @@ public class BaseActivity extends AppCompatActivity {
 
         }
 
-
         // Highlight the selected item has been done by NavigationView
         menuItem.setChecked(true);
         // Set action bar title
@@ -119,7 +100,6 @@ public class BaseActivity extends AppCompatActivity {
         mDrawer.closeDrawers();
     }
 
-
     //Navigation drawer opens when 3bar icon is tapped
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -127,9 +107,6 @@ public class BaseActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-
-
     }
-
 
 }
