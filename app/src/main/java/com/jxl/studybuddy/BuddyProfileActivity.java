@@ -55,7 +55,6 @@ public class BuddyProfileActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         FrameLayout contentFrameLayout = (FrameLayout) findViewById(R.id.flContent); //Remember this is the FrameLayout area within your base_main.xml
         getLayoutInflater().inflate(R.layout.activity_buddy_profile, contentFrameLayout);
-
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         final String user_id = getIntent().getStringExtra("user_id");
